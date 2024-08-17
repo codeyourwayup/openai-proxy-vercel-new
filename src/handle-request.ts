@@ -1,4 +1,4 @@
-const pickHeaders = (headers, keys) => {
+const pickHeaders = (headers: Headers, keys: (string | RegExp)[]): Headers => {
   const picked = new Headers();
   for (const key of headers.keys()) {
     if (keys.some((k) => (typeof k === "string" ? k === key : k.test(key)))) {
@@ -11,13 +11,13 @@ const pickHeaders = (headers, keys) => {
   return picked;
 };
 
-const CORS_HEADERS = {
+const CORS_HEADERS: Record<string, string> = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
   "access-control-allow-headers": "Content-Type, Authorization, OpenAI-Beta", // Include OpenAI-Beta here
 };
 
-export default async function handleRequest(req) {
+export default async function handleRequest(req: Request & { nextUrl?: URL }) {
   if (req.method === "OPTIONS") {
     return new Response(null, {
       headers: CORS_HEADERS,
