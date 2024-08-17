@@ -28,7 +28,7 @@ export default async function handleRequest(req: Request & { nextUrl?: URL }) {
   const url = new URL(pathname + search, "https://api.openai.com").href;
 
   // Update the keys array to include 'OpenAI-Beta'
-  const headers = pickHeaders(req.headers, ["content-type", "authorization", "OpenAI-Beta"]);
+  const headers = pickHeaders(req.headers, ["content-type", "authorization", /OpenAI-Beta/i]);
 
   console.log("Request URL:", url);
   console.log("Request Headers:", Array.from(headers.entries()));
