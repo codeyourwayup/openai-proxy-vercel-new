@@ -14,7 +14,7 @@ const pickHeaders = (headers: Headers, keys: (string | RegExp)[]): Headers => {
 const CORS_HEADERS: Record<string, string> = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "access-control-allow-headers": "Content-Type, Authorization",
+  "access-control-allow-headers": "Content-Type, Authorization, OpenAI-Beta", // Include OpenAI-Beta here
 };
 
 export default async function handleRequest(req: Request & { nextUrl?: URL }) {
@@ -26,7 +26,9 @@ export default async function handleRequest(req: Request & { nextUrl?: URL }) {
 
   const { pathname, search } = req.nextUrl ? req.nextUrl : new URL(req.url);
   const url = new URL(pathname + search, "https://api.openai.com").href;
-  const headers = pickHeaders(req.headers, ["content-type", "authorization"]);
+
+  // Update the keys array to include 'OpenAI-Beta'
+  const headers = pickHeaders(req.headers, ["content-type", "authorization", "OpenAI-Beta"]);
 
   const res = await fetch(url, {
     body: req.body,
