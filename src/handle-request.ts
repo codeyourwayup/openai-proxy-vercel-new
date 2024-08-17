@@ -1,4 +1,4 @@
-const pickHeaders = (headers: Headers, keys: (string | RegExp)[]): Headers => {
+const pickHeaders = (headers, keys) => {
   const picked = new Headers();
   for (const key of headers.keys()) {
     if (keys.some((k) => (typeof k === "string" ? k === key : k.test(key)))) {
@@ -11,13 +11,13 @@ const pickHeaders = (headers: Headers, keys: (string | RegExp)[]): Headers => {
   return picked;
 };
 
-const CORS_HEADERS: Record<string, string> = {
+const CORS_HEADERS = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
   "access-control-allow-headers": "Content-Type, Authorization, OpenAI-Beta", // Include OpenAI-Beta here
 };
 
-export default async function handleRequest(req: Request & { nextUrl?: URL }) {
+export default async function handleRequest(req) {
   if (req.method === "OPTIONS") {
     return new Response(null, {
       headers: CORS_HEADERS,
@@ -30,11 +30,17 @@ export default async function handleRequest(req: Request & { nextUrl?: URL }) {
   // Update the keys array to include 'OpenAI-Beta'
   const headers = pickHeaders(req.headers, ["content-type", "authorization", "OpenAI-Beta"]);
 
+  console.log("Request URL:", url);
+  console.log("Request Headers:", Array.from(headers.entries()));
+
   const res = await fetch(url, {
     body: req.body,
     method: req.method,
     headers,
   });
+
+  console.log("Response Status:", res.status);
+  console.log("Response Headers:", Array.from(res.headers.entries()));
 
   const resHeaders = {
     ...CORS_HEADERS,
